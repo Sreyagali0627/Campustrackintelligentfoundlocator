@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusConnect - Verify Email</title>
+  <title>CampusMatrix - Verify Email</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
       * {
@@ -582,7 +582,7 @@
       
       <div class="logo">
         <i class="fas fa-university"></i>
-        <span>CampusConnect</span>
+        <span>CampusMatrix</span>
       </div>
       
       <div class="welcome-text">
@@ -671,7 +671,7 @@
   </div>
 
   <script>
-    // CampusConnect OTP System
+    // CampusMatrix OTP System - Updated for Backend Integration
     class CampusOTP {
       static initOTPInputs() {
         const inputs = document.querySelectorAll('.otp-input');
@@ -751,42 +751,9 @@
         }
       }
 
-      static generateOTP() {
-        return Math.floor(100000 + Math.random() * 900000).toString();
-      }
-
-      static verifyOTP(enteredOTP, storedOTP) {
-        return enteredOTP === storedOTP;
-      }
-
-      static simulateOTPSend(email) {
-        const otp = this.generateOTP();
-        
-        // Store OTP in sessionStorage
-        sessionStorage.setItem('campusOTP', otp);
-        sessionStorage.setItem('otpEmail', email);
-        sessionStorage.setItem('otpExpiry', Date.now() + 5 * 60 * 1000); // 5 minutes
-        
-        // Log OTP to console (for demo)
-        console.log(`📧 OTP sent to ${email}: ${otp}`);
-        console.log('For testing, use this OTP:', otp);
-        
-        // Show notification
-        this.showNotification(`Verification code sent to ${email}`, 'info');
-        
-        return otp;
-      }
-
       static showNotification(message, type = 'info') {
         // Simple alert for now
         console.log(`${type.toUpperCase()}: ${message}`);
-      }
-
-      static isOTPExpired() {
-        const expiryTime = sessionStorage.getItem('otpExpiry');
-        if (!expiryTime) return true;
-        
-        return Date.now() > parseInt(expiryTime);
       }
     }
 
@@ -851,29 +818,25 @@
       CampusOTP.initOTPInputs();
       
       // Check if there's pending registration
-      const pendingData = localStorage.getItem('pendingRegistration');
-      if (!pendingData) {
-        alert('No registration data found. Please register first.');
-        window.location.href = 'register.html';
-        return;
+      const email = localStorage.getItem('pendingEmail');
+      if (!email) {
+          alert('No registration found. Please register first.');
+          window.location.href = 'register.html';
+          return;
       }
-      
-      const userData = JSON.parse(pendingData);
-      const email = userData.collegeEmail;
       
       // Display email
       document.getElementById('otpEmail').textContent = email;
       
-      // Generate and send OTP
-      const otp = CampusOTP.simulateOTPSend(email);
-      console.log('Demo OTP:', otp); // Remove this in production
+      console.log('OTP was sent to:', email);
+      console.log('Check Spring Boot console for the OTP');
       
       // Start timers
       const timer = new CampusTimer();
       timer.startOTPTimer();
       timer.startResendTimer();
       
-      // Handle form submission
+      // Handle form submission - CONNECT TO BACKEND
       document.getElementById('otpForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -884,50 +847,77 @@
           enteredOTP += input.value;
         });
         
-        // Get stored OTP
-        const storedOTP = sessionStorage.getItem('campusOTP');
-        
-        // Check if OTP is expired
-        if (CampusOTP.isOTPExpired()) {
-          document.getElementById('otpError').textContent = 'OTP has expired. Please request a new one.';
+        // Validate OTP length
+        if (enteredOTP.length !== 6) {
+          document.getElementById('otpError').textContent = 'Please enter a 6-digit OTP';
           document.getElementById('otpError').classList.add('show');
           return;
         }
         
-        // Verify OTP
-        if (CampusOTP.verifyOTP(enteredOTP, storedOTP)) {
-          // OTP verified successfully
-          document.getElementById('otpError').classList.remove('show');
-          
-          // Mark email as verified
-          userData.isEmailVerified = true;
-          userData.registeredAt = new Date().toISOString();
-          
-          // Save to permanent storage
-          const allUsers = JSON.parse(localStorage.getItem('campusConnectUsers') || '{}');
-          allUsers[userData.studentId] = userData;
-          allUsers[userData.collegeEmail] = userData;
-          localStorage.setItem('campusConnectUsers', JSON.stringify(allUsers));
-          
-          // Save individual user record
-          localStorage.setItem('campusConnectUser_' + userData.studentId, JSON.stringify(userData));
-          
-          // Remove pending data
-          localStorage.removeItem('pendingRegistration');
-          
-          // Clear OTP from session
-          sessionStorage.removeItem('campusOTP');
-          sessionStorage.removeItem('otpEmail');
-          sessionStorage.removeItem('otpExpiry');
-          
-          // Show success and redirect
-          alert('Email verified successfully! Redirecting to login...');
-          setTimeout(() => {
-            window.location.href = 'login.html';
-          }, 1500);
-          
-        } else {
-          // Invalid OTP
+        // Hide error
+        document.getElementById('otpError').classList.remove('show');
+        
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Verifying...';
+        submitBtn.disabled = true;
+        
+        // Call backend API to verify OTP
+        fetch('http://localhost:8080/api/auth/complete-registration', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ otp: enteredOTP })
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => {
+              throw new Error(err.message || 'Verification failed');
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            // OTP verified successfully
+            alert(data.message || 'Registration successful!');
+            
+            // Clear pending email
+            localStorage.removeItem('pendingEmail');
+            
+            // Clear OTP inputs
+            inputs.forEach(input => {
+              input.value = '';
+              input.classList.remove('filled');
+            });
+            
+            // Stop timers
+            clearInterval(timer.timerInterval);
+            clearInterval(timer.resendTimer);
+            
+            // Redirect to login page
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 1000);
+            
+          } else {
+            // Show error from backend
+            document.getElementById('otpError').textContent = data.message || 'Invalid OTP';
+            document.getElementById('otpError').classList.add('show');
+            
+            // Shake animation for error
+            const otpInputs = document.querySelector('.otp-inputs');
+            otpInputs.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+              otpInputs.style.animation = '';
+            }, 500);
+          }
+        })
+        .catch(error => {
+          // Show error
+          document.getElementById('otpError').textContent = error.message || 'Verification failed';
           document.getElementById('otpError').classList.add('show');
           
           // Shake animation for error
@@ -936,35 +926,71 @@
           setTimeout(() => {
             otpInputs.style.animation = '';
           }, 500);
-        }
+        })
+        .finally(() => {
+          // Restore button
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        });
       });
       
-      // Handle resend OTP
+      // Handle resend OTP - CONNECT TO BACKEND
       document.getElementById('resendBtn').addEventListener('click', function() {
         if (this.disabled) return;
         
-        // Generate new OTP
-        const newOTP = CampusOTP.simulateOTPSend(email);
-        console.log('New Demo OTP:', newOTP); // Remove this in production
+        // Show loading
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        this.disabled = true;
         
-        // Clear inputs
-        document.querySelectorAll('.otp-input').forEach(input => {
-          input.value = '';
-          input.classList.remove('filled');
+        // Call backend to resend OTP
+        fetch('http://localhost:8080/api/auth/resend-otp', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: email })
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => {
+              throw new Error(err.message || 'Failed to resend OTP');
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            alert(data.message || 'New OTP sent to your email.');
+            
+            // Clear OTP inputs
+            document.querySelectorAll('.otp-input').forEach(input => {
+              input.value = '';
+              input.classList.remove('filled');
+            });
+            
+            // Focus first input
+            document.querySelector('.otp-input').focus();
+            
+            // Restart timers
+            timer.startOTPTimer();
+            timer.startResendTimer();
+            
+            // Hide error
+            document.getElementById('otpError').classList.remove('show');
+            
+          } else {
+            alert('Error: ' + (data.message || 'Failed to resend OTP'));
+          }
+        })
+        .catch(error => {
+          alert('Error: ' + error.message);
+        })
+        .finally(() => {
+          // Restore button
+          this.innerHTML = originalText;
+          this.disabled = false;
         });
-        
-        // Focus first input
-        document.querySelector('.otp-input').focus();
-        
-        // Restart timers
-        timer.startOTPTimer();
-        timer.startResendTimer();
-        
-        // Hide error
-        document.getElementById('otpError').classList.remove('show');
-        
-        // Show message
-        alert(`New OTP sent to ${email}. Check your email.`);
       });
       
       // Add shake animation

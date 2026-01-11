@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusConnect - Login</title>
+  <title>CampusMatrix - Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
@@ -455,6 +455,89 @@
         gap: 15px;
       }
     }
+    /* Password toggle eye styles */
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  color: var(--jet-stream);
+  background-color: rgba(189, 217, 215, 0.1);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.password-toggle:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Eye animation */
+.eye-icon {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-icon i {
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+/* Slash animation */
+.eye-slash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transform-origin: center;
+  transition: width 0.3s ease;
+}
+
+.password-toggle.active .eye-slash {
+  width: 24px;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Eye wink animation */
+@keyframes wink {
+  0%, 100% { 
+    height: 6px;
+    top: calc(50% - 3px);
+  }
+  50% { 
+    height: 2px;
+    top: calc(50% - 1px);
+  }
+}
+
+.password-toggle:hover .eye-icon i {
+  animation: wink 0.6s ease;
+}
+
+/* Cool glow effect when toggled */
+.password-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(189, 217, 215, 0.3);
+}
   </style>
 </head>
 <body>
@@ -463,7 +546,7 @@
     <!-- Left Side - Brand & Visuals -->
     <div class="left-side">
       <div class="back-to-home">
-        <a href="index.html" class="back-link">
+        <a href="LandingPage.html" class="back-link">
           <i class="fas fa-arrow-left"></i>
           Back to Home
         </a>
@@ -471,11 +554,11 @@
       
       <div class="logo">
         <i class="fas fa-university"></i>
-        <span>CampusConnect</span>
+        <span>CampusMatrix</span>
       </div>
       
       <div class="welcome-text">
-        <h1>Welcome Back to CampusConnect</h1>
+        <h1>Welcome Back to CampusMatrix</h1>
         <p>Sign in to access your campus community, connect with peers, and explore resources.</p>
       </div>
       
@@ -502,7 +585,7 @@
       <div class="form-container">
         <div class="form-header">
           <h2>Sign In to Your Account</h2>
-          <p>Enter your credentials to access CampusConnect</p>
+          <p>Enter your credentials to access CampusMatrix</p>
         </div>
         
         <form id="loginForm">
@@ -519,6 +602,12 @@
             <div class="input-with-icon">
               <i class="fas fa-lock"></i>
               <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+              <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+                <div class="eye-icon">
+                  <i class="fas fa-eye"></i>
+                  <div class="eye-slash"></div>
+                </div>
+              </button>
             </div>
           </div>
           
@@ -530,13 +619,13 @@
             <a href="forgotpassword.html" class="forgot-password">Forgot password?</a>
           </div>
           
-          <button type="submit" class="btn btn-primary">Sign In</button>
+         <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
           
-          <div class="divider">
+          <!-- <div class="divider">
             <span>Or continue with</span>
-          </div>
+          </div> -->
           
-          <div class="social-login">
+          <!-- <div class="social-login">
             <button type="button" class="social-btn">
               <i class="fab fa-google" style="color: #DB4437;"></i>
               Sign in with Google
@@ -545,7 +634,7 @@
               <i class="fab fa-microsoft" style="color: #00A4EF;"></i>
               Sign in with Microsoft
             </button>
-          </div>
+          </div> -->
           
           <!-- Demo Credentials -->
           <!-- <div class="demo-credentials">
@@ -561,13 +650,11 @@
     </div>
   </div>
 
-  <script>
-    // Form submission
-// Form submission
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
-  const email = document.getElementById('email').value;
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   
   // Simple validation
@@ -576,61 +663,311 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     return;
   }
   
-  // Get all registered users from localStorage
-  const allUsers = JSON.parse(localStorage.getItem('campusConnectUsers') || '{}');
-  let isValid = false;
-  let userData = null;
+  // Show loading state
+  const submitBtn = document.getElementById('submitBtn');
+  const originalText = submitBtn.textContent;
+  const originalHTML = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+  submitBtn.disabled = true;
   
-  // Check if email/ID exists in registered users
-  if (allUsers[email]) {
-    userData = allUsers[email];
-  } else {
-    // Check if any user has this student ID
-    for (const key in allUsers) {
-      if (allUsers[key].studentId === email) {
-        userData = allUsers[key];
+  console.log('=== LOGIN ATTEMPT STARTED ===');
+  console.log('Email:', email);
+  
+  try {
+    // Send login request to backend API
+    const response = await fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        collegeEmail: email,
+        password: password
+      })
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    
+    let data;
+    try {
+      data = await response.json();
+      console.log('Response data:', data);
+    } catch (parseError) {
+      console.error('Failed to parse response as JSON');
+      const text = await response.text();
+      console.error('Response text:', text);
+      throw new Error('Server returned invalid response');
+    }
+    
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `Login failed (${response.status})`);
+    }
+    
+    // Extract token from response - check ALL possible field names
+    let token = null;
+    const possibleTokenFields = ['accessToken', 'token', 'jwtToken', 'jwt', 'authToken'];
+    
+    for (const field of possibleTokenFields) {
+      if (data[field]) {
+        token = data[field];
+        console.log(`Found token in field: ${field}`);
         break;
       }
     }
-  }
-  
-  // Validate password
-  if (userData && userData.password === password) {
-    isValid = true;
-  }
-  
-  if (isValid) {
-    alert('Login successful! Redirecting to dashboard...');
     
-    // Store login state and user data
-    sessionStorage.setItem('isLoggedIn', 'true');
-    sessionStorage.setItem('currentUser', JSON.stringify(userData));
+    // If still no token, check nested fields
+    if (!token && data.data && data.data.token) {
+      token = data.data.token;
+      console.log('Found token in data.token field');
+    }
     
-    // Also store in localStorage for persistence
-    localStorage.setItem('currentLoggedInUser', JSON.stringify(userData));
+    if (!token) {
+      console.error('No token found in response. Available keys:', Object.keys(data));
+      console.error('Full response:', JSON.stringify(data, null, 2));
+      throw new Error('Server did not return authentication token. Available fields: ' + Object.keys(data).join(', '));
+    }
     
-    // Redirect to dashboard after delay
+    // Validate token
+    if (typeof token !== 'string' || token.trim() === '') {
+      console.error('Token is empty or invalid type:', typeof token, token);
+      throw new Error('Invalid authentication token received');
+    }
+    
+    // Check JWT format (should have 2 dots = 3 parts)
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.error('Token is not valid JWT format. Parts:', parts.length);
+      console.error('Token preview (first 100 chars):', token.substring(0, 100));
+      console.error('Token length:', token.length);
+      
+      // Try to decode if it's base64 encoded
+      try {
+        console.log('Attempting to decode parts:');
+        console.log('Header:', atob(parts[0]));
+        console.log('Payload:', atob(parts[1]));
+      } catch (decodeError) {
+        console.error('Cannot decode as base64');
+      }
+      
+      throw new Error(`Invalid token format (expected 3 parts, got ${parts.length}). Please contact administrator.`);
+    }
+    
+    // Parse token payload for debugging
+    try {
+      const payload = JSON.parse(atob(parts[1]));
+      console.log('Token payload:', payload);
+      console.log('Token expires:', new Date(payload.exp * 1000).toLocaleString());
+      console.log('Token issued:', new Date(payload.iat * 1000).toLocaleString());
+    } catch (parseError) {
+      console.warn('Could not parse token payload:', parseError);
+    }
+    
+    // === CRITICAL: STORE TOKEN IN BOTH FORMATS FOR COMPATIBILITY ===
+    console.log('=== STORING TOKEN FOR COMPATIBILITY ===');
+    
+    // Store in ALL possible formats for compatibility
+    localStorage.setItem('authToken', token);  // For api-service.js
+    localStorage.setItem('token', token);      // For explore-people.js
+    localStorage.setItem('accessToken', token); // For other files
+    
+    console.log('✅ Token stored with keys: authToken, token, accessToken');
+    console.log('Token length:', token.length);
+    console.log('Token preview (first 50 chars):', token.substring(0, 50) + '...');
+    
+    // === STORE USER DATA ===
+    let userData = null;
+    
+    // Check for user data in various possible locations
+    if (data.user) {
+      userData = data.user;
+      console.log('Found user data in data.user');
+    } else if (data.data && data.data.user) {
+      userData = data.data.user;
+      console.log('Found user data in data.data.user');
+    } else if (data.username || data.email || data.collegeEmail) {
+      // Create minimal user object
+      userData = {
+        email: data.email || data.collegeEmail || email,
+        username: data.username || email.split('@')[0],
+        fullName: data.fullName || data.name || email.split('@')[0]
+      };
+      console.log('Created minimal user data');
+    }
+    
+    if (userData) {
+      // Store in ALL formats for compatibility
+      localStorage.setItem('user', JSON.stringify(userData));          // For api-service.js
+      localStorage.setItem('currentUser', JSON.stringify(userData));   // For explore-people.js
+      
+      console.log('✅ User data stored with keys: user, currentUser');
+      console.log('User data:', userData);
+    } else {
+      console.warn('⚠️ No user data found in response');
+    }
+    
+    // === VERIFY STORAGE ===
+    console.log('=== VERIFYING STORAGE ===');
+    console.log('authToken in localStorage:', !!localStorage.getItem('authToken'));
+    console.log('token in localStorage:', !!localStorage.getItem('token'));
+    console.log('user in localStorage:', !!localStorage.getItem('user'));
+    console.log('currentUser in localStorage:', !!localStorage.getItem('currentUser'));
+    
+    // === SUCCESS MESSAGE ===
+    console.log('✅ Login successful! All tokens stored.');
+    
+    // Show success message with more info
+    const successMsg = userData 
+      ? `✅ Welcome back, ${userData.fullName || userData.email}! Redirecting...`
+      : '✅ Login successful! Redirecting...';
+    
+    // Create a nice success notification
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-weight: 500;
+    `;
+    notification.innerHTML = `
+      <i class="fas fa-check-circle"></i> ${successMsg}
+    `;
+    document.body.appendChild(notification);
+    
+    // === REDIRECT TO DASHBOARD ===
+    console.log('Will redirect to dashboard in 1.5 seconds...');
+    
     setTimeout(() => {
+      notification.remove();
+      console.log('=== REDIRECTING TO DASHBOARD ===');
+      console.log('Current URL:', window.location.href);
+      console.log('Redirecting to dashboard.html');
+      
+      // Force reload to ensure all scripts initialize properly
       window.location.href = 'dashboard.html';
     }, 1500);
+    
+  } catch (error) {
+    console.error('=== LOGIN FAILED ===');
+    console.error('Error:', error);
+    
+    // Clear any partial/stale auth data
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
+    
+    // Show error message
+    const errorMsg = error.message || 'Login failed. Please try again.';
+    
+    // Create error notification
+    const errorNotification = document.createElement('div');
+    errorNotification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-weight: 500;
+    `;
+    errorNotification.innerHTML = `
+      <i class="fas fa-exclamation-circle"></i> ${errorMsg}
+    `;
+    document.body.appendChild(errorNotification);
+    
+    setTimeout(() => {
+      errorNotification.remove();
+    }, 3000);
+    
+  } finally {
+    // Reset button state
+    submitBtn.innerHTML = originalHTML;
+    submitBtn.disabled = false;
+    console.log('=== LOGIN PROCESS COMPLETED ===');
+  }
+  
+});
+// Password toggle functionality
+const togglePassword = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
+
+// Toggle password visibility
+togglePassword.addEventListener('click', function() {
+  const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  passwordInput.setAttribute('type', type);
+  
+  // Toggle active class for animation
+  this.classList.toggle('active');
+  
+  // Change icon with smooth transition
+  const icon = this.querySelector('i');
+  if (type === 'text') {
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+    // Add a subtle glow effect when password is visible
+    this.style.boxShadow = '0 0 0 2px rgba(189, 217, 215, 0.5)';
   } else {
-    alert('Invalid credentials. Please check your email/student ID and password.');
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+    this.style.boxShadow = 'none';
+  }
+  
+  // Add click animation
+  this.style.transform = 'translateY(-50%) scale(0.95)';
+  setTimeout(() => {
+    this.style.transform = 'translateY(-50%) scale(1)';
+  }, 150);
+  
+  // Focus back on the input for better UX
+  passwordInput.focus();
+});
+
+// Add visual feedback when password input is focused
+passwordInput.addEventListener('focus', function() {
+  togglePassword.style.color = 'var(--jet-stream)';
+});
+
+passwordInput.addEventListener('blur', function() {
+  togglePassword.style.color = 'var(--text-light)';
+});
+
+// Keyboard shortcut support (Alt+P to toggle password visibility)
+document.addEventListener('keydown', function(e) {
+  if ((e.altKey || e.metaKey) && e.key === 'p') {
+    e.preventDefault();
+    togglePassword.click();
   }
 });
-    
-    // Social login buttons
-    document.querySelectorAll('.social-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        const provider = this.textContent.includes('Google') ? 'Google' : 'Microsoft';
-        alert(`In a real application, this would redirect to ${provider} authentication.`);
-      });
-    });
-    
-    // Forgot password
-    // document.querySelector('.forgot-password').addEventListener('click', function(e) {
-    //   e.preventDefault();
-    //   alert('Password reset link would be sent to your registered email.');
-    // });
-  </script>
+
+// Optional: Auto-hide password after 5 seconds if made visible
+let hidePasswordTimeout;
+passwordInput.addEventListener('input', function() {
+  if (passwordInput.type === 'text') {
+    clearTimeout(hidePasswordTimeout);
+    hidePasswordTimeout = setTimeout(() => {
+      if (passwordInput.type === 'text' && togglePassword.classList.contains('active')) {
+        togglePassword.click();
+        // Show a brief notification
+        const notification = document.createElement('div');
+        notification.textContent = 'Password hidden for security';
+        notification.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#03363D;color:#BDD9D7;padding:8px 16px;border-radius:6px;font-size:0.9rem;z-index:1000;';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 2000);
+      }
+    }, 5000);
+  }
+});
+</script>
 </body>
 </html>

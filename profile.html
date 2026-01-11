@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Copy CSS from dashboard -->
-    <title>CampusConnect - My Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - CampusMatrix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-                * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -19,507 +21,90 @@
             --text-light: #64748b;
             --accent: #0ea5e9;
             --progress-fill: #10b981;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
         }
         
         body {
             background-color: var(--light-bg);
             color: var(--blue-whale);
-            display: flex;
             min-height: 100vh;
         }
         
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background-color: var(--blue-whale);
-            color: var(--jet-stream);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .logo {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(189, 217, 215, 0.2);
-        }
-        
-        .logo i {
-            color: var(--jet-stream);
-        }
-        
-        .nav-menu {
-            list-style: none;
-            flex-grow: 1;
-        }
-        
-        .nav-item {
-            padding: 16px 18px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(189, 217, 215, 0.15);
-        }
-        
-        .nav-item i {
-            width: 22px;
+        /* Header */
+        .profile-header {
+            background: linear-gradient(135deg, var(--blue-whale), #025959);
+            color: white;
+            padding: 30px 0;
             text-align: center;
-        }
-        
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 20px 0;
-            border-top: 1px solid rgba(189, 217, 215, 0.2);
-        }
-        
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--jet-stream);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--blue-whale);
-            font-size: 20px;
-        }
-        
-        /* Main Content */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 30px;
         }
         
-        .welcome h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
         
-        .welcome p {
-            color: var(--text-light);
-            font-size: 16px;
-        }
-        
-        .notification {
-            position: relative;
-            cursor: pointer;
-            font-size: 22px;
-            color: var(--blue-whale);
-        }
-        
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: var(--accent);
+        .back-btn {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            font-size: 12px;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin-bottom: 35px;
-        }
-        
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(189, 217, 215, 0.5);
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .card-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--blue-whale);
-        }
-        
-        .card-count {
-            background-color: var(--jet-stream);
-            color: var(--blue-whale);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .card p {
-            color: var(--text-light);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .progress-bar {
-            height: 10px;
-            background-color: var(--jet-stream);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background-color: var(--progress-fill);
-            border-radius: 5px;
-        }
-        
-        .view-btn {
-            background-color: var(--jet-stream);
-            color: var(--blue-whale);
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 20px;
-        }
-        
-        .view-btn:hover {
-            background-color: var(--accent);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        /* Tasks & Calendar Section */
-        .bottom-section {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-        }
-        
-        .tasks-board {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(189, 217, 215, 0.5);
-        }
-        
-        .tasks-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .tasks-header h2 {
-            font-size: 22px;
-            color: var(--blue-whale);
-        }
-        
-        .task-filter {
-            background-color: var(--jet-stream);
-            color: var(--blue-whale);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .task-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 22px 0;
-            border-bottom: 1px solid rgba(189, 217, 215, 0.6);
-        }
-        
-        .task-item:last-child {
-            border-bottom: none;
-        }
-        
-        .task-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
-            background-color: var(--jet-stream);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 18px;
-            color: var(--blue-whale);
-            font-size: 20px;
-        }
-        
-        .task-details h4 {
-            margin-bottom: 8px;
-            font-size: 18px;
-            color: var(--blue-whale);
-        }
-        
-        .task-details p {
-            color: var(--text-light);
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        
-        .task-date {
-            font-size: 14px;
-            color: var(--text-light);
-            background-color: rgba(189, 217, 215, 0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-        
-        /* Calendar */
-        .calendar {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(189, 217, 215, 0.5);
-        }
-        
-        .calendar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .month-year {
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--blue-whale);
-        }
-        
-        .calendar-controls i {
-            color: var(--blue-whale);
-            cursor: pointer;
-            margin-left: 15px;
-            font-size: 18px;
-        }
-        
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-        
-        .day-name {
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-            padding: 8px;
-            color: var(--text-light);
-        }
-        
-        .day {
-            text-align: center;
-            padding: 12px 6px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        
-        .day:hover {
-            background-color: var(--jet-stream);
-        }
-        
-        .day.active {
-            background-color: var(--accent);
-            color: white;
-        }
-        
-        .event-item {
-            background-color: var(--jet-stream);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-        
-        .event-time {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--blue-whale);
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
         }
         
-        .event-title {
-            font-size: 15px;
-            color: var(--blue-whale);
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
         }
         
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .dashboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .bottom-section {
-                grid-template-columns: 1fr;
-            }
+        .profile-title {
+            font-size: 32px;
+            font-weight: 700;
         }
         
-        @media (max-width: 900px) {
-            body {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                padding: 20px;
-            }
-            
-            .logo {
-                margin-bottom: 0;
-                margin-right: 30px;
-            }
-            
-            .nav-menu {
-                display: flex;
-                overflow-x: auto;
-                flex-grow: 0;
-            }
-            
-            .nav-item {
-                margin-bottom: 0;
-                margin-right: 10px;
-                white-space: nowrap;
-            }
-            
-            .user-profile {
-                border-top: none;
-                border-left: 1px solid rgba(189, 217, 215, 0.2);
-                padding-left: 20px;
-                margin-left: auto;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+        .profile-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
         }
         
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 20px;
-            }
-            
-            .sidebar {
-                flex-wrap: wrap;
-            }
-            
-            .logo {
-                width: 100%;
-                margin-bottom: 15px;
-                justify-content: center;
-            }
-            
-            .nav-menu {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .user-profile {
-                display: none;
-            }
-        }
-          /* Add profile picture styles */
-    .header-user {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .profile-pic {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: var(--jet-stream);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: var(--blue-whale);
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.3s;
-    }
-    
-    .profile-pic:hover {
-        border-color: var(--jet-stream);
-        transform: scale(1.05);
-    }
-    
-    .profile-pic.has-image {
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
+        /* Main Container */
         .profile-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px 40px;
         }
         
-        .profile-header {
+        /* Profile Overview */
+        .profile-overview {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             gap: 30px;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         
-        .profile-pic-large {
+        .profile-avatar-container {
+            position: relative;
+        }
+        
+        .profile-avatar {
             width: 150px;
             height: 150px;
             border-radius: 50%;
@@ -530,132 +115,578 @@
             font-size: 48px;
             font-weight: bold;
             color: var(--blue-whale);
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
         
-        .profile-info h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
-        .profile-info p {
-            color: var(--text-light);
-            margin-bottom: 5px;
-        }
-        
-        .profile-details {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        
-        .detail-row {
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
             display: flex;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
         }
         
-        .detail-label {
-            width: 200px;
-            font-weight: 600;
+        .avatar-upload-btn:hover {
+            background: #0284c7;
+            transform: scale(1.1);
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 28px;
+            margin-bottom: 5px;
             color: var(--blue-whale);
         }
         
-        .detail-value {
-            flex: 1;
+        .profile-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .detail-badge {
+            background: rgba(189, 217, 215, 0.3);
+            color: var(--blue-whale);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Profile Form */
+        .profile-form-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--jet-stream);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: var(--blue-whale);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--jet-stream);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--blue-whale);
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--jet-stream);
+            border-radius: 10px;
+            background: var(--light-bg);
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--blue-whale);
+            box-shadow: 0 0 0 3px rgba(3, 54, 61, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-hint {
+            font-size: 14px;
             color: var(--text-light);
+            margin-top: 6px;
+        }
+        
+        /* Skills & Clubs Input */
+        .tags-input-container {
+            border: 2px solid var(--jet-stream);
+            border-radius: 10px;
+            padding: 10px;
+            background: var(--light-bg);
+            min-height: 60px;
+        }
+        
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .tag {
+            background: var(--jet-stream);
+            color: var(--blue-whale);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .remove-tag {
+            background: none;
+            border: none;
+            color: var(--blue-whale);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tag-input {
+            border: none;
+            background: none;
+            padding: 10px;
+            width: 100%;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .tag-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--jet-stream);
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--blue-whale);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #02252b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(3, 54, 61, 0.2);
+        }
+        
+        .btn-secondary {
+            background: var(--jet-stream);
+            color: var(--blue-whale);
+        }
+        
+        .btn-secondary:hover {
+            background: #a8d0c9;
+            transform: translateY(-2px);
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            border: 4px solid var(--jet-stream);
+            border-top: 4px solid var(--blue-whale);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .notification.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .notification.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-overview {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .profile-details {
+                justify-content: center;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 36px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-header {
+                padding: 20px 0;
+            }
+            
+            .profile-title {
+                font-size: 24px;
+            }
+            
+            .profile-container {
+                padding: 0 15px 30px;
+            }
+            
+            .profile-overview,
+            .profile-form-container {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Copy sidebar -->
-    
-    <div class="main-content">
-        <div class="profile-container">
-            <div class="profile-header" id="profileHeader">
-                <!-- Will be populated by JavaScript -->
-            </div>
-            
-            <div class="profile-details">
-                <h2 style="margin-bottom: 30px;">Profile Information</h2>
-                <div id="profileDetails">
-                    <!-- Will be populated by JavaScript -->
-                </div>
-            </div>
+    <!-- Header -->
+    <header class="profile-header">
+        <div class="header-content">
+            <button class="back-btn" id="backToDashboard">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </button>
+            <h1 class="profile-title">My Profile</h1>
+            <p class="profile-subtitle">Update your personal information and showcase your skills</p>
         </div>
-    </div>
-
-    <script>
-        // Get current user
-        const currentUser = JSON.parse(localStorage.getItem('currentLoggedInUser'));
+    </header>
+    
+    <!-- Main Content -->
+    <main class="profile-container">
+        <!-- Profile Overview -->
+        <section class="profile-overview">
+            <div class="profile-avatar-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    <!-- Avatar will be loaded here -->
+                </div>
+                <button class="avatar-upload-btn" id="uploadAvatarBtn">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                </button>
+            </div>
+            
+            <div class="profile-info">
+                <h2 class="profile-name" id="profileName">Loading...</h2>
+                <div class="profile-details">
+                    <span class="detail-badge" id="studentId">
+                        <i class="fas fa-id-card"></i>
+                        <span>Roll No: Loading...</span>
+                    </span>
+                    <span class="detail-badge" id="departmentInfo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Department: Loading...</span>
+                    </span>
+                    <span class="detail-badge" id="yearInfo">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Year: Loading...</span>
+                    </span>
+                    <span class="detail-badge" id="emailInfo">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email: Loading...</span>
+                    </span>
+                </div>
+            </div>
+        </section>
         
-        if (!currentUser) {
-            window.location.href = 'login.html';
-        } else {
-            // Update profile header
-            const initials = currentUser.fullName.split(' ').map(n => n[0]).join('').toUpperCase();
-            document.getElementById('profileHeader').innerHTML = `
-                <div class="profile-pic-large">${initials}</div>
-                <div class="profile-info">
-                    <h1>${currentUser.fullName}</h1>
-                    <p><i class="fas fa-graduation-cap"></i> ${currentUser.department} Student</p>
-                    <p><i class="fas fa-envelope"></i> ${currentUser.collegeEmail}</p>
-                    <p><i class="fas fa-id-card"></i> ${currentUser.studentId}</p>
+        <!-- Profile Edit Form -->
+        <section class="profile-form-container">
+            <form id="profileForm">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-user-circle"></i>
+                        Personal Information
+                    </h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender">
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not">Prefer not to say</option>
+                            </select>
+                            <p class="form-hint">Your gender information</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hostel">Hostel / Accommodation</label>
+                            <select id="hostel" name="hostel">
+                                <option value="">Select Accommodation</option>
+                                <option value="hostel-a">Hostel A</option>
+                                <option value="hostel-b">Hostel B</option>
+                                <option value="hostel-c">Hostel C</option>
+                                <option value="hostel-d">Hostel D</option>
+                                <option value="day-scholar">Day Scholar</option>
+                            </select>
+                            <p class="form-hint">Where do you stay during college?</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="bloodGroup">Blood Group</label>
+                            <select id="bloodGroup" name="bloodGroup">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                            <p class="form-hint">Your blood group (for emergency purposes)</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="batch">Batch</label>
+                            <input type="text" id="batch" name="batch" placeholder="e.g., 2021-2025">
+                            <p class="form-hint">Your academic batch years</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cgpa">CGPA</label>
+                        <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.01" placeholder="e.g., 8.5">
+                        <p class="form-hint">Your current CGPA (optional)</p>
+                    </div>
                 </div>
-            `;
-            
-            // Update profile details
-            const departments = {
-                'cse': 'Computer Science',
-                'ece': 'Electronics & Communication',
-                'mech': 'Mechanical Engineering',
-                'civil': 'Civil Engineering',
-                'eee': 'Electrical Engineering',
-                'it': 'Information Technology',
-                'mba': 'Business Administration',
-                'other': 'Other'
-            };
-            
-            const years = {
-                '1': 'First Year',
-                '2': 'Second Year',
-                '3': 'Third Year',
-                '4': 'Fourth Year',
-                '5': 'Fifth Year',
-                'PG': 'Post Graduate'
-            };
-            
-            document.getElementById('profileDetails').innerHTML = `
-                <div class="detail-row">
-                    <div class="detail-label">Full Name</div>
-                    <div class="detail-value">${currentUser.fullName}</div>
+                
+                <!-- Bio Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-edit"></i>
+                        About Me
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio / Introduction</label>
+                        <textarea id="bio" name="bio" placeholder="Tell others about yourself, your interests, goals, etc. (Max 500 characters)"></textarea>
+                        <p class="form-hint">This will be visible on your profile card</p>
+                        <div class="char-counter" style="text-align: right; font-size: 14px; color: var(--text-light); margin-top: 5px;">
+                            <span id="charCount">0</span>/500
+                        </div>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <div class="detail-label">Student ID</div>
-                    <div class="detail-value">${currentUser.studentId}</div>
+                
+                <!-- Skills Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-tools"></i>
+                        Skills & Expertise
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="skills">Technical & Soft Skills</label>
+                        <div class="tags-input-container" id="skillsContainer">
+                            <div class="tags-list" id="skillsList">
+                                <!-- Skills tags will be added here -->
+                            </div>
+                            <input type="text" class="tag-input" id="skillInput" placeholder="Type a skill and press Enter">
+                        </div>
+                        <p class="form-hint">Add skills like: Python, JavaScript, Leadership, Public Speaking</p>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <div class="detail-label">College Email</div>
-                    <div class="detail-value">${currentUser.collegeEmail}</div>
+                
+                <!-- Clubs & Societies Section -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Clubs & Societies
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="clubs">Clubs & Extracurricular Activities</label>
+                        <div class="tags-input-container" id="clubsContainer">
+                            <div class="tags-list" id="clubsList">
+                                <!-- Clubs tags will be added here -->
+                            </div>
+                            <input type="text" class="tag-input" id="clubInput" placeholder="Type a club name and press Enter">
+                        </div>
+                        <p class="form-hint">Add clubs like: Coding Club, Sports Club, Music Club</p>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <div class="detail-label">Personal Email</div>
-                    <div class="detail-value">${currentUser.personalEmail || 'Not provided'}</div>
+                
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
                 </div>
-                <div class="detail-row">
-                    <div class="detail-label">Academic Year</div>
-                    <div class="detail-value">${years[currentUser.year] || currentUser.year}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Department</div>
-                    <div class="detail-value">${departments[currentUser.department] || currentUser.department}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Account Created</div>
-                    <div class="detail-value">${new Date(currentUser.registeredAt).toLocaleDateString()}</div>
-                </div>
-            `;
-        }
-    </script>
+            </form>
+        </section>
+    </main>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading profile...</p>
+    </div>
+    
+    <script src="js/api-service.js"></script>
+    <script src="js/profile-manager.js"></script>
 </body>
 </html>

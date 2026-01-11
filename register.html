@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusConnect - Register</title>
+  <title>CampusMatrix - Register</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
@@ -440,7 +440,7 @@
     <!-- Left Side - Brand & Visuals -->
     <div class="left-side">
       <div class="back-to-home">
-        <a href="index.html" class="back-link">
+        <a href="LandingPage.html" class="back-link">
           <i class="fas fa-arrow-left"></i>
           Back to Home
         </a>
@@ -448,7 +448,7 @@
       
       <div class="logo">
         <i class="fas fa-university"></i>
-        <span>CampusConnect</span>
+        <span>CampusMatrix</span>
       </div>
       
       <div class="welcome-text">
@@ -494,7 +494,7 @@
       <div class="form-container">
         <div class="form-header">
           <h2>Create Your Account</h2>
-          <p>Fill in your details to join CampusConnect</p>
+          <p>Fill in your details to join CampusMatrix</p>
         </div>
         
         <form id="registrationForm">
@@ -556,18 +556,18 @@
                 <i class="fas fa-graduation-cap"></i>
                 <select id="department" class="form-select" required>
                   <option value="" disabled selected>Select department</option>
-                  <option value="cse">Computer Science</option>
+                  <option value="cse">Computer Science(ALL)</option>
                   <option value="ece">Electronics & Communication</option>
                   <option value="mech">Mechanical Engineering</option>
                   <option value="civil">Civil Engineering</option>
                   <option value="eee">Electrical Engineering</option>
-                  <option value="it">Information Technology</option>
                   <option value="mba">Business Administration</option>
                   <option value="other">Other</option>
                 </select>
               </div>
             </div>
           </div>
+          
           
           <div class="form-group">
             <label for="password">Password</label>
@@ -601,9 +601,8 @@
     </div>
   </div>
 
-  <script>
-    // Form submission
-   registrationForm.addEventListener('submit', function(e) {
+<script>
+registrationForm.addEventListener('submit', function(e) {
   e.preventDefault();
   
   // Basic validation
@@ -629,24 +628,56 @@
     return;
   }
   
-  // Store registration data temporarily
+  // Map to backend
   const registrationData = {
     fullName: document.getElementById('fullName').value,
     studentId: document.getElementById('studentId').value,
-    collegeEmail: collegeEmail,
-    personalEmail: document.getElementById('personalEmail').value || '',
+    collegeEmail: document.getElementById('collegeEmail').value,
+    personalEmail: document.getElementById('personalEmail').value.trim() || null,
     year: document.getElementById('year').value,
     department: document.getElementById('department').value,
-    password: password,
-    isEmailVerified: false
+    phoneNumber: document.getElementById('phoneNumber') ? 
+                 document.getElementById('phoneNumber').value : "", // Added phoneNumber
+    password: document.getElementById('password').value
   };
   
-  // Save to localStorage
-  localStorage.setItem('pendingRegistration', JSON.stringify(registrationData));
+  console.log('Sending:', registrationData);
   
-  // Redirect to OTP verification page
-  window.location.href = 'otp-verify.html';
+  // FIXED URL - removed typo
+  fetch('http://localhost:8080/api/auth/start-registration', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(registrationData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => { 
+        throw new Error(err.message || 'Registration failed'); 
+      });
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Registration started:', data);
+    
+    if (data.success) {
+        // Save email for OTP page
+        localStorage.setItem('pendingEmail', data.email);
+        
+        // Redirect to OTP verification page
+        alert('OTP sent to your email!');
+        window.location.href = 'otp-verify.html';
+    } else {
+        alert('Error: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Registration error:', error);
+    alert('Registration failed: ' + error.message);
+  });
 });
-  </script>
+</script>
 </body>
 </html>
