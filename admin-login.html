@@ -16,6 +16,10 @@
     --card-bg:#fff;
     --text-light:#64748b;
     --input-border:#cbd5e1;
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+    --info:#3b82f6;
   }
 
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Verdana,Arial;}
@@ -34,14 +38,74 @@
     display:flex;
     flex-direction:column;
     justify-content:center;
+    position:relative;
+    overflow:hidden;
   }
 
-  .left .logo{
-    font-size:2.4rem;
-    font-weight:700;
-    display:flex;
-    gap:12px;
-    align-items:center;
+  .left::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(189, 217, 215, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(189, 217, 215, 0.05) 0%, transparent 50%);
+  }
+
+  .logo {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .logo span {
+    color: var(--jet-stream);
+  }
+
+  .left h1{
+    font-size: 2.5rem;
+    margin-top: 25px;
+    color: white;
+    position: relative;
+    z-index: 2;
+    line-height: 1.2;
+  }
+
+  .left p{
+    max-width:360px;
+    margin-top:15px;
+    color: rgba(255,255,255,0.8);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+  }
+
+  .features-list {
+    margin-top: 30px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .feature-item i {
+    color: var(--jet-stream);
+    font-size: 1.1rem;
+    width: 24px;
   }
 
   .right{
@@ -50,60 +114,300 @@
     justify-content:center;
     align-items:center;
     padding:60px;
+    background: var(--light-bg);
   }
 
   .card{
     background:white;
     width:430px;
-    padding:35px;
-    border-radius:12px;
-    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    padding:40px;
+    border-radius:16px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.1);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+    position: relative;
+    z-index: 1;
   }
 
-  h2{text-align:center;margin-bottom:6px;color:var(--blue-whale);}
-  p{text-align:center;color:var(--text-light);margin-bottom:22px;}
+  h2{
+    text-align:center;
+    margin-bottom:8px;
+    color:var(--blue-whale);
+    font-size: 2rem;
+    font-weight: 700;
+  }
 
-  label{font-weight:600;display:block;margin-bottom:6px;color:var(--blue-whale)}
+  .subtitle{
+    text-align:center;
+    color:var(--text-light);
+    margin-bottom:30px;
+    font-size: 1rem;
+  }
+
+  label{
+    font-weight:600;
+    display:block;
+    margin-bottom:8px;
+    color:var(--blue-whale);
+    font-size: 0.95rem;
+  }
 
   .input-box{
     position:relative;
-    margin-bottom:18px;
+    margin-bottom:20px;
   }
 
   .input-box i{
-    position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-light);
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--text-light);
+    font-size: 1.1rem;
   }
 
   .input-box input{
     width:100%;
-    padding:14px 14px 14px 44px;
+    padding:16px 16px 16px 50px;
     border:2px solid var(--input-border);
-    border-radius:10px;
+    border-radius:12px;
     font-size:1rem;
+    transition: all 0.3s;
+    background: white;
+  }
+
+  .input-box input:focus {
+    outline: none;
+    border-color: var(--jet-stream);
+    box-shadow: 0 0 0 3px rgba(189, 217, 215, 0.2);
   }
 
   .btn{
     width:100%;
-    padding:14px;
-    background:var(--jet-stream);
+    padding:16px;
+    background:var(--blue-whale);
     border:none;
-    border-radius:10px;
-    color:var(--blue-whale);
+    border-radius:12px;
+    color:white;
     font-size:1rem;
     font-weight:700;
     cursor:pointer;
     margin-top:10px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn:hover {
+    background: #02262c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(3, 54, 61, 0.2);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn i {
+    font-size: 1.1rem;
   }
 
   .link{
     text-align:center;
-    margin-top:15px;
+    margin-top:20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
   }
 
   .link a{
     text-decoration:none;
     color:var(--blue-whale);
     font-weight:600;
+    transition: color 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .link a:hover {
+    color: #05505a;
+    text-decoration: underline;
+  }
+
+  /* Notification Styles */
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10000;
+    animation: slideInRight 0.3s;
+    max-width: 400px;
+    border-left: 4px solid var(--danger);
+  }
+
+  @keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .notification.success {
+    border-left-color: var(--success);
+  }
+
+  .notification.error {
+    border-left-color: var(--danger);
+  }
+
+  .notification.warning {
+    border-left-color: var(--warning);
+  }
+
+  .notification.info {
+    border-left-color: var(--info);
+  }
+
+  .notification i {
+    font-size: 1.2rem;
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Security Notice */
+  .security-notice {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 25px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .security-notice i {
+    color: var(--blue-whale);
+    font-size: 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .left, .right {
+      padding: 40px;
+    }
+    
+    .card {
+      width: 380px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+    }
+    
+    .left {
+      padding: 40px 30px;
+      text-align: center;
+    }
+    
+    .right {
+      padding: 40px 20px;
+    }
+    
+    .card {
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      justify-content: center;
+    }
+    
+    .left h1 {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .left, .right {
+      padding: 30px 20px;
+    }
+    
+    .card {
+      padding: 25px;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+    }
+    
+    h2 {
+      font-size: 1.75rem;
+    }
+  }
+
+  /* Animation for the form */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  /* Password toggle */
+  .password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .password-toggle:hover {
+    color: var(--blue-whale);
   }
 </style>
 </head>
@@ -112,70 +416,274 @@
 
   <!-- LEFT SECTION -->
   <div class="left">
-    <div class="logo"><i class="fas fa-user-shield"></i> Admin Panel</div>
-    <h1 style="margin-top:25px;">CampusMatrix Administration</h1>
-    <p style="max-width:360px;margin-top:12px;">
-      Secure access for platform administrators to manage users and operations.
+    <div class="logo">
+      <i class="fas fa-university"></i>
+      <span>CampusMatrix</span>
+    </div>
+    <h1>Admin Dashboard Portal</h1>
+    <p>
+      Secure administrative access to manage users, content, and platform operations.
+      Complete control over campus activities and user management.
     </p>
+    
+    <div class="features-list">
+      <div class="feature-item">
+        <i class="fas fa-shield-alt"></i>
+        <span>Role-based access control</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Real-time analytics dashboard</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-users-cog"></i>
+        <span>Complete user management</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-cogs"></i>
+        <span>Platform configuration</span>
+      </div>
+    </div>
   </div>
 
   <!-- RIGHT SECTION -->
   <div class="right">
     <div class="card">
-
       <h2>Admin Login</h2>
-      <p>Enter your admin credentials</p>
+      <p class="subtitle">Enter your administrator credentials</p>
 
       <form id="adminLoginForm">
-        <label>Email</label>
+        <label>Username</label>
         <div class="input-box">
-          <i class="fas fa-envelope"></i>
-          <input type="email" id="adminEmail" placeholder="admin@campus.edu" required>
+          <i class="fas fa-user"></i>
+          <input type="text" id="adminUsername" placeholder="Enter admin username" required autocomplete="username">
         </div>
 
         <label>Password</label>
         <div class="input-box">
           <i class="fas fa-lock"></i>
-          <input type="password" id="adminPassword" placeholder="Enter password" required>
+          <input type="password" id="adminPassword" placeholder="Enter your password" required autocomplete="current-password">
+          <button type="button" class="password-toggle" id="passwordToggle">
+            <i class="fas fa-eye"></i>
+          </button>
         </div>
 
-        <button class="btn" type="submit">Sign In</button>
+        <button class="btn" type="submit" id="loginButton">
+          <i class="fas fa-sign-in-alt"></i>
+          <span id="loginButtonText">Sign In to Dashboard</span>
+        </button>
+
+        <div class="security-notice">
+          <i class="fas fa-info-circle"></i>
+          <span>Restricted access. Authorized personnel only.</span>
+        </div>
 
         <div class="link">
-          <a href="login.html">Login as Student</a>
+          <a href="login.html">
+            <i class="fas fa-external-link-alt"></i>
+            Access Student Portal
+          </a>
         </div>
       </form>
-
     </div>
   </div>
 
+  <!-- Notification Container -->
+  <div id="notificationContainer"></div>
 
-<!-- LOGIN SCRIPT -->
 <script>
-document.getElementById("adminLoginForm").addEventListener("submit", function(e){
-    e.preventDefault();
+// ==================== CONFIGURATION ====================
+const API_BASE_URL = 'http://localhost:8080/api';
+let isLoggingIn = false;
 
-    const email = document.getElementById("adminEmail").value.trim();
-    const password = document.getElementById("adminPassword").value;
-
-    // Demo Admin Credentials (change later)
-    const ADMIN_EMAIL = "admin@campus.edu";
-    const ADMIN_PASSWORD = "AdminPass123";
-
-    if(email === ADMIN_EMAIL && password === ADMIN_PASSWORD){
-        // Store login session
-        localStorage.setItem("cm_admin", JSON.stringify({
-            email: email,
-            loggedAt: new Date().toISOString()
-        }));
-
-        // Redirect to dashboard
-        window.location.href = "admin-dashboard.html";
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+    // If coming from logout, clear token
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('logout') || urlParams.has('expired')) {
+        localStorage.clear(); // Clear everything
     }
-    else{
-        alert("Invalid admin login.\nTry: admin@campus.edu / AdminPass123");
-    }
+    
+    // NO AUTO-REDIRECT! User must login manually
+    setupEventListeners();
 });
+
+// ==================== EVENT LISTENERS ====================
+function setupEventListeners() {
+    // Login form submission
+    const loginForm = document.getElementById('adminLoginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Password toggle
+    const passwordToggle = document.getElementById('passwordToggle');
+    if (passwordToggle) {
+        passwordToggle.addEventListener('click', togglePasswordVisibility);
+    }
+    
+    // Auto-focus username field
+    document.getElementById('adminUsername')?.focus();
+}
+
+// ==================== LOGIN HANDLER ====================
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    if (isLoggingIn) return;
+    
+    const username = document.getElementById('adminUsername').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    
+    // Basic validation
+    if (!username || !password) {
+        showNotification('Please enter both username and password', 'error');
+        return;
+    }
+    
+    // Show loading state
+    setLoginButtonState(true);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/admin/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Store the token
+            localStorage.setItem('adminToken', data.token);
+            
+            // Store admin info if available
+            if (data.admin) {
+                localStorage.setItem('adminInfo', JSON.stringify(data.admin));
+            }
+            
+            showNotification('Login successful! Redirecting...', 'success');
+            
+            // Redirect to dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = 'admin-dashboard.html';
+            }, 1000);
+            
+        } else {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Invalid credentials');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        
+        // Show appropriate error message
+        let errorMessage = 'Login failed. Please try again.';
+        
+        if (error.message.includes('Invalid credentials')) {
+            errorMessage = 'Invalid username or password';
+        } else if (error.message.includes('NetworkError')) {
+            errorMessage = 'Network error. Please check your connection';
+        } else if (error.message.includes('User is blocked')) {
+            errorMessage = 'Your account has been deactivated';
+        }
+        
+        showNotification(errorMessage, 'error');
+        
+        // Reset login state
+        setLoginButtonState(false);
+    }
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+function setLoginButtonState(loading) {
+    const button = document.getElementById('loginButton');
+    const buttonText = document.getElementById('loginButtonText');
+    
+    if (loading) {
+        isLoggingIn = true;
+        button.disabled = true;
+        buttonText.textContent = 'Authenticating...';
+        button.innerHTML = `<div class="spinner"></div>`;
+    } else {
+        isLoggingIn = false;
+        button.disabled = false;
+        buttonText.textContent = 'Sign In to Dashboard';
+        button.innerHTML = `<i class="fas fa-sign-in-alt"></i><span id="loginButtonText">Sign In to Dashboard</span>`;
+    }
+}
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('adminPassword');
+    const toggleIcon = document.getElementById('passwordToggle').querySelector('i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notificationContainer');
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                         type === 'error' ? 'exclamation-circle' : 
+                         type === 'warning' ? 'exclamation-triangle' : 
+                         'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideInRight 0.3s reverse';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+async function validateTokenAndRedirect(token) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/validate`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.message === "Token is valid") {
+                // Token is valid, redirect to dashboard
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                // Token is invalid, clear it
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminInfo');
+            }
+        } else {
+            // Token is invalid, clear it
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminInfo');
+        }
+    } catch (error) {
+        console.error('Token validation error:', error);
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminInfo');
+    }
+}
+
+
+
 </script>
 
 </body>
